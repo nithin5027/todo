@@ -20,7 +20,7 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           docker_name: 'owasp/zap2docker-stable'
-          target: 'https://www.demo.testfire.net'
+          target: 'http://demo.testfire.net/'
           rules_file_name: '.zap/rules.tsv'
           cmd_options: '-a'
 
