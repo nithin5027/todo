@@ -16,11 +16,11 @@ jobs:
         with:
           ref: master
       - name: ZAP Scan
-        uses: zaproxy/action-full-scan@v0.2.0
+        uses: zaproxy/action-baseline@v0.4.0
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           docker_name: 'owasp/zap2docker-stable'
-          target: 'https://www.gintaa.com/'
+          target: 'https://www.demo.testfire.net'
           rules_file_name: '.zap/rules.tsv'
           cmd_options: '-a'
 
