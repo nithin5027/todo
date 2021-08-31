@@ -23,10 +23,6 @@ jobs:
           target: 'https://www.gintaa.com/'
           rules_file_name: '.zap/rules.tsv'
           cmd_options: '-a'
-
-name: SNYK 
-
-jobs:
   security:
     runs-on: ubuntu-latest
     steps:
@@ -35,11 +31,7 @@ jobs:
         uses: snyk/actions/node@master
         env:
           SNYK_TOKEN: ${{130124f8-a802-4b77-8496-fb1f910a02f6}}
-          
-name: SNYK monitor
-
-jobs:
-  security:
+  monitor:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@master
