@@ -11,14 +11,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@master
-      - name: Install dependencies
-        run: | 
-              npm install -g snyk
-              snyk auth
       - name: Run Snyk to check for vulnerabilities
         uses: snyk/actions/node@master
       - name: Snyk monitor
         run: snyk test
+      - name: Install dependencies
+        run: | 
+              npm install -g snyk
+              snyk auth
         env:
           SNYK_TOKEN: 130124f8-a802-4b77-8496-fb1f910a02f6
 
