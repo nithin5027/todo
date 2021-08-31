@@ -7,40 +7,18 @@ on:
 name: Release | Deploy
 
 jobs:
-  zap_scan:
-    runs-on: ubuntu-latest
-    name: Scan the webapplication
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-        with:
-          ref: master
-      - name: ZAP Scan
-        uses: zaproxy/action-baseline@v0.4.0
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          docker_name: 'owasp/zap2docker-stable'
-          target: 'https://www.gintaa.com/'
-          rules_file_name: '.zap/rules.tsv'
-          cmd_options: '-a'
   security:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@master
-      - name: Run Snyk to check for vulnerabilities
-        uses: snyk/actions/node@master
-        env:
-          SNYK_TOKEN: 130124f8-a802-4b77-8496-fb1f910a02f6
-  monitor:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@master
-      - name: Run Snyk to check for vulnerabilities
-        uses: snyk/actions/node@master
-        env:
-          SNYK_TOKEN: 130124f8-a802-4b77-8496-fb1f910a02f6
+      - uses: snyk/actions/setup@master
+      - uses: actions/setup-go@v1
         with:
-          command: monitor
+          go-version: '1.13'
+      - name: Snyk monitor
+        run: snyk test
+        env:
+          SNYK_TOKEN: 130124f8-a802-4b77-8496-fb1f910a02f6
 
   firebase_deploy:
     name: Firebase Deploy
