@@ -11,13 +11,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@master
-      - uses: snyk/actions/setup@master
-      - uses: actions/setup-go@v1
-        with:
-          go-version: '1.13'
+      - name: Run Snyk to check for vulnerabilities
+        uses: snyk/actions/node@master
       - name: Install dependencies
         run: | 
-              sudo npm install -g snyk 
+              npm install -g snyk 
       - name: Snyk monitor
         run: snyk test
         env:
