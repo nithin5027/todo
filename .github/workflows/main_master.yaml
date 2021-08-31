@@ -30,7 +30,7 @@ jobs:
       - name: Run Snyk to check for vulnerabilities
         uses: snyk/actions/node@master
         env:
-          SNYK_TOKEN: ${{130124f8-a802-4b77-8496-fb1f910a02f6}}
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
   monitor:
     runs-on: ubuntu-latest
     steps:
@@ -38,7 +38,7 @@ jobs:
       - name: Run Snyk to check for vulnerabilities
         uses: snyk/actions/node@master
         env:
-          SNYK_TOKEN: ${{130124f8-a802-4b77-8496-fb1f910a02f6}}
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         with:
           command: monitor
 
