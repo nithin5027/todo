@@ -1,0 +1,27 @@
+on:
+  workflow_dispatch:
+
+name: Example workflow using Snyk
+
+jobs:
+  security:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+      - name: Run Snyk to check for vulnerabilities
+        uses: snyk/actions/node@master
+        env:
+          SNYK_TOKEN: ${{130124f8-a802-4b77-8496-fb1f910a02f6}}
+name: Example workflow using Snyk
+
+jobs:
+  security:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+      - name: Run Snyk to check for vulnerabilities
+        uses: snyk/actions/node@master
+        env:
+          SNYK_TOKEN: ${{130124f8-a802-4b77-8496-fb1f910a02f6}}
+        with:
+          command: monitor
