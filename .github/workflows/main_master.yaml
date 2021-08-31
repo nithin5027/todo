@@ -17,7 +17,7 @@ jobs:
           go-version: '1.13'
       - name: Install dependencies
         run: | 
-              npm install -g snyk 
+              sudo npm install -g snyk 
       - name: Snyk monitor
         run: snyk test
         env:
