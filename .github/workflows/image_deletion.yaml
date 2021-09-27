@@ -1,6 +1,5 @@
 on: 
   workflow_dispatch: 
-  #needs: [CI, Build_myApp]
     inputs:
       foo:
         description: 'GCR image microservice name like gintaa-user'
@@ -15,10 +14,19 @@ jobs:
        - name: 'Authenticate to Gcloud'
          uses: google-github-actions/setup-gcloud@master
          with:
-           project_id: myProject
-           service_account_email: myServiceAccount@myProject.iam.gserviceaccount.com
-           service_account_key: ${{ secrets.CONTAINER_ADMIN_NP_SA }}
+           project_id: gintaa-cloud-poc
+           # service_account_email: myServiceAccount@myProject.iam.gserviceaccount.com
+           service_account_key: ${{ secrets.GCP_SA_KEY_POC }}
            export_default_credentials: true
-       - name: 'Cleanup untagged images in nonprod'
-         run: gcloud container images list-tags gcr.io/gintaa-cloud-poc/${{inputs.foo}} --filter='-tags:*' --format="get(digest)" --limit=10 > tags && while read p; 
-              do gcloud container images delete "gcr.io/myProject/myApp@$p" --quiet; done < tags
+       - name: 'Cleanup GCR images'
+         run: |
+             echo "IMAGE=gcr.io/gintaa-cloud-poc/${{inputs.foo}}"
+             echo "DELETE_BEFORE=2021-09-01"
+             for digest in $(gcloud container images list-tags \
+             gcr.io/gintaa-cloud-poc/${{inputs.foo}} --limit=999999 \
+               --sort-by=TIMESTAMP \
+               --filter="timestamp.datetime &lt; '${DELETE_BEFORE}'" \
+               --format='get(digest)'; do
+                # gcloud container images delete -q --force-delete-tags "${IMAGE}@${digest}"
+                gcloud container images delete "gcr.io/gintaa-cloud-poc/${{inputs.foo}}@${digest}" --quiet
+               done
