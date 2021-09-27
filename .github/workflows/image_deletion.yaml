@@ -1,7 +1,7 @@
 on: 
   workflow_dispatch: 
     inputs:
-      foo:
+      name:
         description: 'GCR image microservice name like gintaa-user'
         required: true
         default: 'gintaa-user'
@@ -27,12 +27,12 @@ jobs:
            export_default_credentials: true
        - name: 'Cleanup GCR images'
          run: |
-             echo "IMAGE_name=gcr.io/gintaa-cloud-poc/${{inputs.foo}}"
+             echo "IMAGE_name=gcr.io/gintaa-cloud-poc/${{inputs.name}}"
              echo "DELETE_BEFORE=2021-09-01"
              for digest in $(gcloud container images list-tags \
-               gcr.io/gintaa-cloud-poc/${{inputs.foo}} --limit=999999 \
+               gcr.io/gintaa-cloud-poc/${{inputs.name}} --limit=999999 \
                --sort-by=TIMESTAMP \
                --filter='timestamp.datetime > ${{inputs.date}}' \
                --format='get(digest)'; do
-                 gcloud container images delete "gcr.io/gintaa-cloud-poc/${{inputs.foo}}@${digest}" --quiet
+                 gcloud container images delete "gcr.io/gintaa-cloud-poc/${{inputs.name}}@${digest}" --quiet
              done
