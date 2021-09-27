@@ -5,10 +5,12 @@ on:
         description: 'GCR image microservice name like gintaa-user'
         required: true
         default: 'gintaa-user'
-
+      date:
+        description: 'specify the date from which you want to delete'
+        required: true
+        default: '01-09-2021'  
 env:
   PROJECT_ID: ${{ secrets.GCP_PROJECT_POC }}
-  DELETE_BEFORE: ${{ 2021-09-01 }}
   
 
 jobs:
@@ -30,7 +32,7 @@ jobs:
              for digest in $(gcloud container images list-tags \
                gcr.io/gintaa-cloud-poc/${{inputs.foo}} --limit=999999 \
                --sort-by=TIMESTAMP \
-               --filter="timestamp.datetime &lt; '${DELETE_BEFORE}'" \
+               --filter='timestamp.datetime > ${{inputs.date}}' \
                --format='get(digest)'; do
                  gcloud container images delete "gcr.io/gintaa-cloud-poc/${{inputs.foo}}@${digest}" --quiet
              done
