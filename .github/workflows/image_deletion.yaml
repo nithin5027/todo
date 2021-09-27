@@ -23,10 +23,9 @@ jobs:
              echo "IMAGE=gcr.io/gintaa-cloud-poc/${{inputs.foo}}"
              echo "DELETE_BEFORE=2021-09-01"
              for digest in $(gcloud container images list-tags \
-             gcr.io/gintaa-cloud-poc/${{inputs.foo}} --limit=999999 \
+               gcr.io/gintaa-cloud-poc/${{inputs.foo}} --limit=999999 \
                --sort-by=TIMESTAMP \
                --filter="timestamp.datetime &lt; '${DELETE_BEFORE}'" \
                --format='get(digest)'; do
-                # gcloud container images delete -q --force-delete-tags "${IMAGE}@${digest}"
-                gcloud container images delete "gcr.io/gintaa-cloud-poc/${{inputs.foo}}@${digest}" --quiet
-               done
+                 gcloud container images delete "gcr.io/gintaa-cloud-poc/${{inputs.foo}}@${digest}" --quiet
+             done
