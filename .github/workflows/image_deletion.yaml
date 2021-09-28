@@ -6,7 +6,7 @@ on:
         required: true
         default: 'gintaa-user'
       date:
-        description: 'specify the date from which you want to delete'
+        description: 'Specify the date from which you want to delete'
         required: true
         default: '01-09-2021'  
 env:
