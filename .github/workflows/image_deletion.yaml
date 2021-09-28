@@ -38,5 +38,5 @@ jobs:
                --filter='timestamp.datetime < ${{ github.event.inputs.date}}' \
                --format='get(digest)' )  
              do
-                 gcloud container images delete "gcr.io/${{ env.PROJECT_ID }}/${{ github.event.inputs.name}}@${digest}" --quiet
+                 gcloud container images delete "gcr.io/${{ env.PROJECT_ID }}/${{ github.event.inputs.name}}@${digest}" --quiet --force-delete-tags
              done
