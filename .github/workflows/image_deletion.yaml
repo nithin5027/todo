@@ -32,7 +32,7 @@ jobs:
              for digest in $(gcloud container images list-tags \
                gcr.io/${{ env.PROJECT_ID }}/${{inputs.name}} --limit=999999 \
                --sort-by=TIMESTAMP \
-               --filter='timestamp.datetime > ${{inputs.date}}' \
+               --filter='timestamp.datetime < ${{inputs.date}}' \
                --format='get(digest)'; do
                  gcloud container images delete "gcr.io/${{ env.PROJECT_ID }}/${{inputs.name}}@${digest}" --quiet
              done
