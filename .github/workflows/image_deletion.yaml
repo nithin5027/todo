@@ -8,7 +8,7 @@ on:
       date:
         description: 'Specify the date from which you want to delete'
         required: true
-        default: '01-09-2021'  
+        default: '2021-09-01'  
 
 name: GCR Image Deletion
 
