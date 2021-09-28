@@ -8,7 +8,7 @@ on:
       date:
         description: 'specify the date from which you want to delete'
         required: true
-        default: '01-10-2021'  
+        default: '01-09-2021'  
 env:
   PROJECT_ID: ${{ secrets.GCP_PROJECT_POC }}
   
