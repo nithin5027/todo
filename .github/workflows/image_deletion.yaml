@@ -28,7 +28,7 @@ jobs:
        - name: 'Cleanup GCR images'
          run: |
              echo "IMAGE_name=gcr.io/${{ env.PROJECT_ID }}/${{ inputs.name }}"
-             echo "DELETE_BEFORE=2021-09-01"
+             echo "DELETE_BEFORE=${{ inputs.date }}"
              for digest in $(gcloud container images list-tags \
                gcr.io/${{ env.PROJECT_ID }}/${{inputs.name}} --limit=999999 \
                --sort-by=TIMESTAMP \
