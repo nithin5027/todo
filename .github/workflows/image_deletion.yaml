@@ -30,13 +30,13 @@ jobs:
            export_default_credentials: true
        - name: 'Cleanup GCR images'
          run: |
-             echo "IMAGE_name=gcr.io/${{ env.PROJECT_ID }}/${{ inputs.name }}"
-             echo "DELETE_BEFORE=${{ inputs.date }}"
+             echo "IMAGE_name=gcr.io/${{ env.PROJECT_ID }}/${{ github.event.inputs.name }}"
+             echo "DELETE_BEFORE=${{ github.event.inputs.date }}"
              for digest in $(gcloud container images list-tags \
-               gcr.io/${{ env.PROJECT_ID }}/${{inputs.name}} --limit=999999 \
+               gcr.io/${{ env.PROJECT_ID }}/${{ github.event.inputs.name }} --limit=999999 \
                --sort-by=TIMESTAMP \
-               --filter='timestamp.datetime < ${{inputs.date}}' \
+               --filter='timestamp.datetime < ${{ github.event.inputs.date}}' \
                --format='get(digest)' )  
              do
-                 gcloud container images delete "gcr.io/${{ env.PROJECT_ID }}/${{inputs.name}}@${digest}" --quiet
+                 gcloud container images delete "gcr.io/${{ env.PROJECT_ID }}/${{ github.event.inputs.name}}@${digest}" --quiet
              done
