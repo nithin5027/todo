@@ -14,7 +14,7 @@ env:
 
 jobs:
    build:
-     name: GCR Image deletion     
+     name: GCR Image Add Tag    
      runs-on: ubuntu-latest
      steps:
        - name: 'Authenticate to Gcloud'
