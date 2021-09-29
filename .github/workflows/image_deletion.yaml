@@ -34,8 +34,7 @@ jobs:
              echo "DELETE_BEFORE=${{ github.event.inputs.date }}"
              for digest in $(gcloud container images list-tags \
                gcr.io/${{ env.PROJECT_ID }}/${{ github.event.inputs.name }} --limit=999999 \
-               --sort-by=TIMESTAMP \
-               --filter='timestamp.datetime < ${{ github.event.inputs.date}}' \
+               --filter='(-tags=latest AND -tags~dirty) OR timestamp.datetime < ${{ github.event.inputs.date}}' \
                --format='get(digest)' )  
              do
                  gcloud container images delete "gcr.io/${{ env.PROJECT_ID }}/${{ github.event.inputs.name}}@${digest}" --quiet --force-delete-tags
