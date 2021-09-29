@@ -26,6 +26,6 @@ jobs:
        - name: 'Adding tags to GCR images'
          run: |
              echo "gcr.io/${{ env.PROJECT_ID }}/${{ github.event.inputs.name }}"
-             export LATEST=$(gcloud container images list-tags gcr.io/${{ env.PROJECT_ID }}/${{inputs.name}} --limit 1 --format='get(tags)')
+             export LATEST=$(gcloud container images list-tags gcr.io/${{ env.PROJECT_ID }}/${{ github.event.inputs.name }} --limit 1 --format='get(tags)')
              echo $LATEST
-             gcloud container images add-tag gcr.io/${{ env.PROJECT_ID }}/${{inputs.name}} gcr.io/${{ env.PROJECT_ID }}/${{inputs.name}}:beta-$(case "$LATEST" in ( *"alpha"* ) echo "$LATEST"| cut -d';' -f 1;; esac | cut -d'-' -f 1 --complement) --quiet
+             gcloud container images add-tag gcr.io/${{ env.PROJECT_ID }}/${{ github.event.inputs.name }} gcr.io/${{ env.PROJECT_ID }}/${{ github.event.inputs.name }}:beta-$(case "$LATEST" in ( *"alpha"* ) echo "$LATEST"| cut -d';' -f 1;; esac | cut -d'-' -f 1 --complement) --quiet
