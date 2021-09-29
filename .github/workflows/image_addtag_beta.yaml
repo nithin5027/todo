@@ -4,6 +4,7 @@ on:
       name:
         description: 'GCR image microservice name like gintaa-user'
         required: true
+        options: ['gintaa-user', 'gintaa-business', 'gintaa-offers']
         default: 'gintaa-user'
 
 name: GCR Image Add Tag - beta
