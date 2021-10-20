@@ -10,10 +10,12 @@ jobs:
   lighthouseci:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v1
+      - name: audit live URL
+      - uses: jakejarvis/lighthouse-action@master
         with:
-          node-version: 14
-      - run: npm install && npm install -g @lhci/cli@0.8.x
-      - run: npm run build
-      - run: lhci autorun
+          url: ${{ github.event.inputs.target }}
+      - name: upload results as an artifacts
+        uses: actions/upload-artifact@main
+        with:
+          name: lighthouse report
+          path: './report'
