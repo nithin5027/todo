@@ -27,4 +27,4 @@ jobs:
          env:
           TOKEN: ${{ secrets.TEST_GITHUB_TOKEN }}
          run: |
-          curl -H "Authorization: token ${TOKEN}" https://raw.githubusercontent.com/asconsoft/gintaa-otp/charts/gintaa-otp/Chart.yaml
+          curl -H "Authorization: token ${TOKEN}" https://raw.githubusercontent.com/asconsoft/gintaa-otp/main/charts/gintaa-otp/Chart.yaml
