@@ -1,0 +1,94 @@
+on:
+  workflow_dispatch:
+  push:
+    branch:
+      develop
+ 
+name: GCR -> Cloud Run - prod
+
+env:
+  GCR_PROJECT_ID: gintaa-cloud-beta
+  GCR_WIF_PROVIDER: ${{ secrets.WIF_PROVIDER_PROD }}
+  GCR_WIF_SA_MS: ${{ secrets.WIF_SA_MS_PROD }}
+  PROJECT_ID: gintaa-cloud-beta
+  WIF_PROVIDER: ${{ secrets.WIF_PROVIDER_BETA }}
+  WIF_SA_MS: ${{ secrets.WIF_SA_MS_BETA }}
+  SERVICE: gintaa-otp
+  GCP_ENVIRON: beta
+  ENVIRON: beta
+  SA: ${{ secrets.SA }}
+
+jobs:
+  run_deploy:
+    name: Deploy Cloud Run
+    permissions:
+      id-token: write
+      contents: read
+      actions: read
+    runs-on: ubuntu-latest
+    environment: beta
+    needs: gcr_push
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+    - uses: google-github-actions/setup-gcloud@v0
+      with:
+        project_id: ${{ env.PROJECT_ID }}
+    - name: Authenticate to Google Cloud
+      id: auth
+      uses: google-github-actions/auth@v0
+      with:
+        workload_identity_provider: gintaa-wif-gh-provider-beta
+        service_account: gintaa-otp-sa-beta@gintaa-cloud-beta.iam.gserviceaccount.com
+    - id: gcloud
+      name: gcloud
+      run: |-
+        gcloud auth login --brief --cred-file="${{ steps.auth.outputs.credentials_file_path }}"
+        gcloud components install docker-credential-gcr
+        gcloud --quiet auth configure-docker
+    - name: Deploy to Cloud Run
+      id: deploy
+      run: |-
+        export IMAGE=gcr.io/$GCR_PROJECT_ID/$SERVICE:${{ needs.gcr_push.outputs.build_id }}
+        export SERVICE_TEMPLATE="$(curl -H "Authorization: token ${ secrets.PAT }" https://raw.githubusercontent.com/asconsoft/$SERVICE/main/run/service.template.yaml)"
+        gcloud config set project $PROJECT_ID
+        #gcloud run regions list | tail -n +2 | while read REGION;
+        regions=("asia-south1")
+        for region in "${regions[@]}"; do
+          export RUN_SERVICE="${{ env.SERVICE}}-${region}-${{ env.ENVIRON }}"
+          export REGION=${region}
+          if [ $REGION == "asia-south1" ]
+          then
+             export CONNECTOR="gintaa-srv-cont-${GCP_ENVIRON}"
+             export POSTGRESQL_HOST="172.25.0.3"
+          else
+             export CONNECTOR="${REGION}-${GCP_ENVIRON}"
+          fi
+          SERVICE_YAML="service-${REGION}.yaml"
+          envsubst < ${SERVICE_TEMPLATE} > ${SERVICE_YAML}
+          cat ${SERVICE_YAML}
+          gcloud config set run/region "${REGION}";
+          gcloud run services replace ${SERVICE_YAML}
+        done
+    - name: Notify Slack - Success
+      uses: 8398a7/action-slack@v3
+      with:
+        channel: '#deployment'
+        if_mention: failure,cancelled
+        status: ${{ job.status }}
+        fields: workflow,job,commit,repo,ref,author
+        text: ':shipit: `${{ env.SERVICE }}` is successfully deploy to :cloud_run: with :bookmark: `${{ needs.gcr_push.outputs.build_id }}`'
+      env:
+        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+      if: success()
+    - name: Notify Slack - Failure
+      uses: 8398a7/action-slack@v3
+      with:
+        channel: '#deployment'
+        if_mention: failure,cancelled
+        status: ${{ job.status }}
+        fields: workflow,job,commit,repo,ref,author
+        text: ':boom: `${{ env.SERVICE }}` is not deployed to :cloud_run: due to some failures :-1:; working on it :hammer_and_wrench:'
+      env:
+        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+      if: failure()
