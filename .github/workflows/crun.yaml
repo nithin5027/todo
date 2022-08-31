@@ -27,7 +27,6 @@ jobs:
       actions: read
     runs-on: ubuntu-latest
     environment: beta
-    needs: gcr_push
     steps:
     - name: Checkout
       uses: actions/checkout@v3
