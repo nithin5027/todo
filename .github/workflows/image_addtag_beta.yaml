@@ -17,9 +17,14 @@ jobs:
      name: GCR Image Add Tag    
      runs-on: ubuntu-latest
      steps:
-       - name: Get file service-template
-         run: |-
-            export SERVICE_TEMPLATE="$(curl -H 'Authorization: token ${{ secrets.TEST_GITHUB_TOKEN }}' \
-            -H 'Accept: application/vnd.github.v4.raw' \
-            -L https://api.github.com/repos/asconsoft/gintaa-otp/charts/gintaa-otp/Chart.yaml)"
-            echo $SERVICE_TEMPLATE
+#        - name: Get file service-template
+#          run: |-
+#             export SERVICE_TEMPLATE="$(curl -H 'Authorization: token ${{ secrets.TEST_GITHUB_TOKEN }}' \
+#             -H 'Accept: application/vnd.github.v4.raw' \
+#             -L https://api.github.com/repos/asconsoft/gintaa-otp/charts/gintaa-otp/Chart.yaml)"
+#             echo $SERVICE_TEMPLATE
+       - name: get file
+         env:
+          TOKEN: ${{ secrets.TEST_GITHUB_TOKEN }}
+         run: |
+          curl -H "Authorization: token ${TOKEN}" https://raw.githubusercontent.com/asconsoft/gintaa-otp/charts/gintaa-otp/Chart.yaml
